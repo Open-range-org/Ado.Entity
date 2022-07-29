@@ -8,7 +8,12 @@ namespace Ado.Entity
 {
     class Connection
     {
-        public List<T> GetDataByQuery<T>(string ConnectionString, string queryFormat, string[] param = null)
+        private string ConnectionString;
+        public Connection(string connectionString)
+        {
+            ConnectionString = connectionString;
+        }
+        public List<T> GetDataByQuery<T>(string queryFormat, string[] param = null)
         {
             List<T> dtoList = new List<T>();
             using (SqlConnection con = new SqlConnection(ConnectionString))
