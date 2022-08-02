@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Runtime;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -30,13 +32,6 @@ namespace Ado.Entity
                     objSqlCommand.CommandType = CommandType.Text;
                     using (SqlDataReader reader = objSqlCommand.ExecuteReader())
                     {
-
-                        //while (reader.Read())
-                        //{
-                        //    T dto = GetObject<T>(reader);
-                        //    dtoList.Add(dto);
-                        //}
-
                         var dataTable = new DataTable();
                         dataTable.Load(reader);
                         dtoList.AddRange(Map<T>(dataTable));
@@ -172,23 +167,6 @@ namespace Ado.Entity
             }
             return convertedValue;
         }
-        private object LoadRecord(Type valType, object val)
-        {
-            var Instance = Activator.CreateInstance(valType);
-            var properties = Instance.GetType().GetProperties();
-
-            foreach (var property in properties)
-            {
-                if (property.PropertyType.IsClass && !property.PropertyType.IsPrimitive)
-                {
-                    property.SetValue(Instance, LoadRecord(property.PropertyType, val), null);
-                }
-                else
-                {
-                    property.SetValue(Instance, val, null);
-                }
-            }
-            return Instance;
-        }
+        
     }
 }
