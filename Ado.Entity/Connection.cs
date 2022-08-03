@@ -50,22 +50,6 @@ namespace Ado.Entity
             }
             return dtoList;
         }
-        public bool AddEntry<T>(List<T> objList)
-        {
-            try
-            {
-                foreach (T obj in objList)
-                {
-                    AddEntry<T>(obj);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-            return true;
-        }
         public bool AddEntry<T>(T obj)
         {
             string queryString = BuildInsertQueryString<T>(obj);
@@ -90,81 +74,7 @@ namespace Ado.Entity
             }
             return true;
         }
-        public bool UpdateEntry<T>(List<T> objList)
-        {
-            try
-            {
-                foreach (T obj in objList)
-                {
-                    UpdateEntry<T>(obj);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
 
-            return true;
-        }
-        public bool UpdateEntry<T>(T obj)
-        {
-            string queryString = BuildUpdateQueryString<T>(obj);
-            using (SqlConnection con = new SqlConnection(ConnectionString))
-            {
-                if (con.State != ConnectionState.Open)
-                    con.Open();
-
-                try
-                {
-                    SqlCommand objSqlCommand = new SqlCommand(queryString, con);
-                    objSqlCommand.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
-            }
-            return true;
-        }
-        private string BuildUpdateQueryString<T>(T obj)
-        {
-
-            var primaryKey = typeof(T).GetProperties().Where(a => a.GetCustomAttributes(true).Where(s => s.GetType() == typeof(Primary)).Count() == 1).FirstOrDefault();
-            var queryString = $"UPDATE {obj.GetType().Name} SET ";
-            var properties = obj.GetType().GetProperties();
-
-            string filterQuery = string.Empty;
-            foreach (var property in properties)
-            {
-                if (property.Name == primaryKey.Name)
-                {
-                    filterQuery += $"Where {property.Name}={property.GetValue(obj)}";
-                }
-                else
-                {
-                    if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Type")
-                    {
-                        queryString += $"[{property.Name}]='{property.GetValue(obj)}',";
-                    }
-                    else if (property.PropertyType.Name == "Boolean")
-                    {
-                        queryString += $"[{property.Name}]={Convert.ToByte(property.GetValue(obj))},";
-                    }
-                    else
-                    {
-                        queryString += $"[{property.Name}]={property.GetValue(obj)},";
-                    }
-                }
-
-
-            }
-            queryString = queryString.Remove(queryString.Length - 1, 1) + $" {filterQuery}";
-            return queryString;
-        }
         private string BuildInsertQueryString<T>(T obj)
         {
 
