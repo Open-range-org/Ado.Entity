@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ado.Entity
 {
-    interface IConnection
+    public interface IConnection
     {
         List<T> GetDataByQuery<T>(string queryFormat, string[] param = null);
         List<T> GetDataByQuery<T>(string queryFormat);
