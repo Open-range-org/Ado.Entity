@@ -8,20 +8,22 @@ using System.Data.SqlClient;
 
 namespace Ado.Entity
 {
-    class Connection
+    class Connection:IConnection
     {
         private string ConnectionString;
         public Connection(string connectionString)
         {
             ConnectionString = connectionString;
         }
+        public List<T> GetDataByQuery<T>(string queryFormat)
+        {
+            return GetDataByQuery<T>(queryFormat, null);
+        }
         public List<T> GetDataByQuery<T>(string queryFormat, string[] param = null)
         {
             List<T> dtoList = new List<T>();
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
-
-
                 try
                 {
                     if (con.State != ConnectionState.Open)
@@ -36,7 +38,6 @@ namespace Ado.Entity
                         dataTable.Load(reader);
                         dtoList.AddRange(Map<T>(dataTable));
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -49,8 +50,25 @@ namespace Ado.Entity
             }
             return dtoList;
         }
-        public bool ExecuteByQuery<T>(string queryFormat, string[] param = null)
+        public bool AddEntry<T>(List<T> objList)
         {
+            try
+            {
+                foreach (T obj in objList)
+                {
+                    AddEntry<T>(obj);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return true;
+        }
+        public bool AddEntry<T>(T obj)
+        {
+            string queryString = BuildInsertQueryString<T>(obj);
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
                 if (con.State != ConnectionState.Open)
@@ -58,14 +76,12 @@ namespace Ado.Entity
 
                 try
                 {
-                    param = param ?? new string[] { };
-                    var queryString = string.Format(queryFormat, param);
                     SqlCommand objSqlCommand = new SqlCommand(queryString, con);
                     objSqlCommand.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    return false;
+                    throw new Exception(ex.Message);
                 }
                 finally
                 {
@@ -73,6 +89,109 @@ namespace Ado.Entity
                 }
             }
             return true;
+        }
+        public bool UpdateEntry<T>(List<T> objList)
+        {
+            try
+            {
+                foreach (T obj in objList)
+                {
+                    UpdateEntry<T>(obj);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return true;
+        }
+        public bool UpdateEntry<T>(T obj)
+        {
+            string queryString = BuildUpdateQueryString<T>(obj);
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                if (con.State != ConnectionState.Open)
+                    con.Open();
+
+                try
+                {
+                    SqlCommand objSqlCommand = new SqlCommand(queryString, con);
+                    objSqlCommand.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+            return true;
+        }
+        private string BuildUpdateQueryString<T>(T obj)
+        {
+
+            var primaryKey = typeof(T).GetProperties().Where(a => a.GetCustomAttributes(true).Where(s => s.GetType() == typeof(Primary)).Count() == 1).FirstOrDefault();
+            var queryString = $"UPDATE {obj.GetType().Name} SET ";
+            var properties = obj.GetType().GetProperties();
+
+            string filterQuery = string.Empty;
+            foreach (var property in properties)
+            {
+                if (property.Name == primaryKey.Name)
+                {
+                    filterQuery += $"Where {property.Name}={property.GetValue(obj)}";
+                }
+                else
+                {
+                    if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Type")
+                    {
+                        queryString += $"[{property.Name}]='{property.GetValue(obj)}',";
+                    }
+                    else if (property.PropertyType.Name == "Boolean")
+                    {
+                        queryString += $"[{property.Name}]={Convert.ToByte(property.GetValue(obj))},";
+                    }
+                    else
+                    {
+                        queryString += $"[{property.Name}]={property.GetValue(obj)},";
+                    }
+                }
+
+
+            }
+            queryString = queryString.Remove(queryString.Length - 1, 1) + $" {filterQuery}";
+            return queryString;
+        }
+        private string BuildInsertQueryString<T>(T obj)
+        {
+
+            var queryString = $"SET IDENTITY_INSERT {obj.GetType().Name} ON ;insert into {obj.GetType().Name} (";
+            var properties = obj.GetType().GetProperties();
+            foreach (var property in properties)
+            {
+                queryString += $"[{property.Name}],";
+            }
+            queryString = queryString.Remove(queryString.Length - 1, 1) + ") VALUES (";
+            foreach (var property in properties)
+            {
+                if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Type")
+                {
+                    queryString += $"'{property.GetValue(obj)}',";
+                }
+                else if (property.PropertyType.Name == "Boolean")
+                {
+                    queryString += $"{Convert.ToByte(property.GetValue(obj))},";
+                }
+                else
+                {
+                    queryString += $"{property.GetValue(obj)},";
+                }
+            }
+            queryString = queryString.Remove(queryString.Length - 1, 1) + $");SET IDENTITY_INSERT {obj.GetType().Name} OFF ;";
+            return queryString;
         }
         private T GetObject<T>(SqlDataReader reader)
         {
@@ -99,6 +218,7 @@ namespace Ado.Entity
             var properties = _object.GetType().GetProperties();
             foreach (var property in properties)
             {
+                var x = property.GetCustomAttributes(true).Count() > 0 ? property.GetCustomAttributes(true)[0].GetType().Name : null;
                 var index = column.IndexOf(property.Name);
                 if (index != -1)
                 {
@@ -167,6 +287,7 @@ namespace Ado.Entity
             }
             return convertedValue;
         }
-        
+
+
     }
 }
