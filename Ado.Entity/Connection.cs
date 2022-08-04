@@ -164,6 +164,10 @@ namespace Ado.Entity
                     {
                         queryString += $"[{property.Name}]={Convert.ToByte(property.GetValue(obj, null))},";
                     }
+                    else if (property.PropertyType.BaseType.Name == "Enum")
+                    {
+                        queryString += $"'{property.GetValue(obj, null)}',";
+                    }
                     else
                     {
                         queryString += $"[{property.Name}]={property.GetValue(obj, null)},";
@@ -192,6 +196,10 @@ namespace Ado.Entity
                 else if (property.PropertyType.Name == "Boolean")
                 {
                     queryString += $"{Convert.ToByte(property.GetValue(obj, null))},";
+                }
+                else if (property.PropertyType.BaseType.Name == "Enum")
+                {
+                    queryString += $"'{property.GetValue(obj,null)}',";
                 }
                 else
                 {
