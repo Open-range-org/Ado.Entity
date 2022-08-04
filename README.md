@@ -1,7 +1,8 @@
 # Ado.Entity
 
 [![Ado.Entity Nuget](https://img.shields.io/nuget/v/Ado.Entity.svg?style=plastic&logo=appveyor)](https://www.nuget.org/packages/Ado.Entity)
-
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Open-range-org/Ado.Entity/blob/main/LICENSE)
+[![Build Pass](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Open-range-org/Ado.Entity/)
 
   Ado.Entity is an object-relational mapping framework for .NET applications. Object-relational mapping allows the use of database queries and operations with object-oriented programming languages.
   It has similarty with Entity framework But you must agree that , it is a lot simpler than Entity framework . If you don;t know about The entity , you can have a look here . Even if you are familier with Entity and trying to avoid complex  `Code First, Model First, and Database First` approaches , you can try this .
