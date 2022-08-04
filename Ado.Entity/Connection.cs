@@ -156,7 +156,9 @@ namespace Ado.Entity
                 }
                 else
                 {
-                    if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Type"|| property.PropertyType.Name == "DateTime")
+                    var propertyTypeName = property.PropertyType.Name;
+                    if (propertyTypeName == "String" || propertyTypeName == "Type"||
+                        propertyTypeName == "DateTime" || propertyTypeName == "Guid")
                     {
                         queryString += $"[{property.Name}]='{property.GetValue(obj, null)}',";
                     }
@@ -189,7 +191,9 @@ namespace Ado.Entity
             queryString = queryString.Remove(queryString.Length - 1, 1) + ") VALUES (";
             foreach (var property in properties)
             {
-                if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Type" || property.PropertyType.Name == "DateTime")
+                var propertyTypeName = property.PropertyType.Name;
+                if (propertyTypeName == "String" || propertyTypeName == "Type" ||
+                    propertyTypeName == "DateTime" || propertyTypeName == "Guid")
                 {
                     queryString += $"'{property.GetValue(obj,null)}',";
                 }
