@@ -182,7 +182,9 @@ namespace Ado.Entity
         private string BuildInsertQueryString<T>(T obj)
         {
 
-            var queryString = $"SET IDENTITY_INSERT {obj.GetType().Name} ON ;insert into {obj.GetType().Name} (";
+            String identityStart = $"SET IDENTITY_INSERT {obj.GetType().Name} ON ;";
+            String identityEnd = $"SET IDENTITY_INSERT {obj.GetType().Name} OFF ;";
+            String queryString = $"insert into {obj.GetType().Name} (";
             var properties = obj.GetType().GetProperties();
             foreach (var property in properties)
             {
@@ -210,8 +212,11 @@ namespace Ado.Entity
                     queryString += $"{property.GetValue(obj, null)},";
                 }
             }
-            queryString = queryString.Remove(queryString.Length - 1, 1) + $");SET IDENTITY_INSERT {obj.GetType().Name} OFF ;";
-            return queryString;
+            queryString = queryString.Remove(queryString.Length - 1, 1) + $");";
+            string query = $"  IF (OBJECTPROPERTY(OBJECT_ID('{obj.GetType().Name}'), 'TableHasIdentity') > 0) {Environment.NewLine} BEGIN {Environment.NewLine}";
+            query += $" {identityStart} {Environment.NewLine} {queryString} {Environment.NewLine} {identityEnd} {Environment.NewLine} END {Environment.NewLine}";
+            query += $" ELSE {Environment.NewLine} BEGIN {Environment.NewLine} {queryString}{Environment.NewLine} END";
+            return query;
         }
         private T GetObject<T>(SqlDataReader reader)
         {
