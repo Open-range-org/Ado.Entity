@@ -7,7 +7,7 @@ You need to import Ado.Entity Namespace'
 ```cs
   using Ado.Entity;
 ```
-After Improting the namespace we need to create one POCO class which will hve same name as a table . That POCO need to inharite the class **`AdoBase`** . That class should contain properties Where Property names and Column names of the Table should be same . For Example, if we have a table called **Users** and it's having 3 columns `"Id(int)","Name(varchar(20))","Age(int)","IsAdmin(bit)","DOB(datetime)"` then the mapping poco class is  
+After Improting the namespace we need to create one POCO class which will hve same name as a table . That POCO need to inharite the class **`AdoBase`** . That class should contain properties Where Property names and Column names of the Table should be same . For Example, if we have a table called **Users** and it's having 5 columns `"Id(int)","Name(varchar(20))","Age(int)","IsAdmin(bit)","DOB(datetime)"` then the mapping poco class is  
 
 ```cs
     class Users:AdoBase
@@ -79,4 +79,5 @@ To Insert a row of the table Users first we need to create a instance of `Connec
 So , The concept is not new right ? Yes I know. But still if you want a light weight object-relational mapping library try this .
 
 https://www.nuget.org/packages/Ado.Entity
+https://github.com/Open-range-org/Ado.Entity
 
