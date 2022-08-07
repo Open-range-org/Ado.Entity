@@ -2,11 +2,18 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B21EFC20-E3D5-4C37-A482-4CDA739F1B35}</ProjectGuid>
     <OutputType>Library</OutputType>
+    <PackageId>Ado.Entity</PackageId>
+    <Id>Ado.Entity</Id>
+	<Title>$title$</Title>
+	<Version>$version$</Version>
+	<Copyright>$copyright$</Copyright>
+	<Description>$description$</Description>
     <AppDesignerFolder>Properties</AppDesignerFolder>
+    <Language>English</Language>
     <RootNamespace>Ado.Entity</RootNamespace>
     <AssemblyName>Ado.Entity</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>

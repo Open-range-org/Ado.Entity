@@ -2,3 +2,5 @@
 /Ado.Entity/bin
 /.vs
 /Ado.Entity/nuget.exe
+/Ado.Entity.Core/obj
+/Ado.Entity.Core/bin

@@ -1,6 +1,7 @@
 # Ado.Entity
 
-[![Ado.Entity Nuget](https://img.shields.io/nuget/v/Ado.Entity.svg?style=plastic&logo=appveyor)](https://www.nuget.org/packages/Ado.Entity)
+[![Ado.Entity Nuget](https://img.shields.io/nuget/v/Ado.Entity.svg?style=plastic&logo=nuget)](https://www.nuget.org/packages/Ado.Entity)
+[![Github](https://img.shields.io/badge/Github-Ado.Entity-green?logo=github)](https://github.com/Open-range-org/Ado.Entity)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Open-range-org/Ado.Entity/blob/main/LICENSE)
 [![Build Pass](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Open-range-org/Ado.Entity/)
 
@@ -82,7 +83,7 @@ To Insert a row of the table Users first we need to create a instance of `Connec
 
 So , The concept is not new right ? Yes I know. But still if you want a light weight object-relational mapping library try this .
 
-https://www.nuget.org/packages/Ado.Entity
+## Example project :  [![Code Example](https://img.shields.io/badge/Github-Code%20Example-green?logo=github)](https://github.com/NIHAR-SARKAR/Ado.Entity.Example)
 
-https://github.com/Open-range-org/Ado.Entity
+
 

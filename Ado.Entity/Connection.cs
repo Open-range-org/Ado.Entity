@@ -22,10 +22,23 @@ namespace Ado.Entity
                 throw new NotImplementedException("AdoBase class is not inharited in Entity");
             }
         }
-        public List<T> GetDataByQuery<T>(string queryFormat)
+
+        /// <summary>
+        /// Returns data based on the query string
+        /// </summary>
+        /// <param name="queryFormat">Query string to get data from table</param>
+        /// <returns>List of Object based od the query string</returns>
+       public List<T> GetDataByQuery<T>(string queryFormat)
         {
             return GetDataByQuery<T>(queryFormat, null);
         }
+        
+        /// <summary>
+        /// Returns data based on the query string
+        /// </summary>
+        /// <param name="queryFormat">Query string to get data from table</param>
+        /// <param name="param">Optional parameter to pass for query string.</param>
+        /// <returns>List of Object based od the query string</returns>
         public List<T> GetDataByQuery<T>(string queryFormat, string[] param = null)
         {
             Validation<T>();
@@ -58,6 +71,11 @@ namespace Ado.Entity
             }
             return dtoList;
         }
+        /// <summary>
+        /// Adds list of object in table
+        /// </summary>
+        /// <param name="objList">List of object which we want to add in table</param>
+        /// <returns>Boolean value if transaction is successful</returns>
         public bool AddEntry<T>(List<T> objList)
         {
             try
@@ -74,6 +92,11 @@ namespace Ado.Entity
 
             return true;
         }
+        /// <summary>
+        /// Adds object in table
+        /// </summary>
+        /// <param name="obj">Object which we want to add in table</param>
+        /// <returns>Boolean value if transaction is successful</returns>
         public bool AddEntry<T>(T obj)
         {
             Validation<T>();
@@ -99,6 +122,12 @@ namespace Ado.Entity
             }
             return true;
         }
+
+        /// <summary>
+        /// Updates list of object in table
+        /// </summary>
+        /// <param name="objList">List of object which we want to add in table</param>
+        /// <returns>Boolean value if transaction is successful</returns>
         public bool UpdateEntry<T>(List<T> objList)
         {
             try
@@ -115,6 +144,11 @@ namespace Ado.Entity
 
             return true;
         }
+        /// <summary>
+        /// Updates object in table
+        /// </summary>
+        /// <param name="obj">List of object which we want to add in table</param>
+        /// <returns>Boolean value if transaction is successful</returns>
         public bool UpdateEntry<T>(T obj)
         {
             Validation<T>();
