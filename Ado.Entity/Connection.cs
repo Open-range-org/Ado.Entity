@@ -186,7 +186,14 @@ namespace Ado.Entity
             {
                 if (property.Name == primaryKey.Name)
                 {
-                    filterQuery += $"Where {property.Name}={property.GetValue(obj, null)}";
+                    if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Guid")
+                    {
+                        filterQuery += $"Where {property.Name}='{property.GetValue(obj,null)}'";
+                    }
+                    else
+                    {
+                        filterQuery += $"Where {property.Name}={property.GetValue(obj,null)}";
+                    }
                 }
                 else
                 {
@@ -228,18 +235,23 @@ namespace Ado.Entity
             foreach (var property in properties)
             {
                 var propertyTypeName = property.PropertyType.Name;
-                if (propertyTypeName == "String" || propertyTypeName == "Type" ||
-                    propertyTypeName == "DateTime" || propertyTypeName == "Guid")
+                if (propertyTypeName == "String" || propertyTypeName == "Type" || propertyTypeName == "Guid"|| propertyTypeName == "Enum")
                 {
                     queryString += $"'{property.GetValue(obj,null)}',";
                 }
-                else if (property.PropertyType.Name == "Boolean")
+                else if (propertyTypeName == "DateTime")
+                {
+                    var date = Convert.ToDateTime(property.GetValue(obj,null));
+                    DateTime updatedDate = date;
+                    if (date.Year < 1753)
+                    {
+                        updatedDate = date.AddYears(1753 - date.Year);
+                    }
+                    queryString += $"'{updatedDate}',";
+                }
+                else if (propertyTypeName == "Boolean")
                 {
                     queryString += $"{Convert.ToByte(property.GetValue(obj, null))},";
-                }
-                else if (property.PropertyType.BaseType.Name == "Enum")
-                {
-                    queryString += $"'{property.GetValue(obj,null)}',";
                 }
                 else
                 {
@@ -284,6 +296,11 @@ namespace Ado.Entity
                     if (property.PropertyType.IsClass || property.PropertyType.IsPrimitive)
                     {
                         var val = ConvertObject(property, row[index]);
+                        property.SetValue(_object, val, null);
+                    }
+                    else if (property.PropertyType.IsEnum)
+                    {
+                        var val = Enum.Parse(property.PropertyType, row[index].ToString(), true);
                         property.SetValue(_object, val, null);
                     }
                     else
@@ -354,7 +371,6 @@ namespace Ado.Entity
                     float.TryParse(val.ToString(), out f);
                     convertedValue = f;
                     break;
-
                 case nameof(TypeCode.DateTime):
                     DateTime d;
                     DateTime.TryParse(val.ToString(), out d);
