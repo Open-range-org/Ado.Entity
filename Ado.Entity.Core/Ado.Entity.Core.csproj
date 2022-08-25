@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Authors>Nihar Sarkar</Authors>
+    <Company>Nihar SarkarNihar Sarkar</Company>
+    <Description>Light version of Orm for .net framework and sql, Easy to use.</Description>
+    <Copyright>Copyright ©  2022</Copyright>
+    <PackageLicenseUrl>https://github.com/Open-range-org/.github/blob/main/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://sarkarnihar.in/Ado.Entity</PackageProjectUrl>
+    <PackageIconUrl>https://i.postimg.cc/nchpYRPr/logo.png</PackageIconUrl>
+    <PackageReleaseNotes>Added Method matadata</PackageReleaseNotes>
+    <PackageTags>Data,Entity,Ado,Database,Sql,ORM,micro-orm</PackageTags>
+    <RepositoryUrl>https://github.com/Open-range-org/Ado.Entity</RepositoryUrl>
+    <NeutralLanguage>en</NeutralLanguage>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <Version>1.0.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+  </ItemGroup>
+
+</Project>

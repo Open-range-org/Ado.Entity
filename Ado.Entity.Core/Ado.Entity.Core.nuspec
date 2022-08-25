@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Nihar Sarkar</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- <icon>icon.png</icon> -->
+    <projectUrl>https://sarkarnihar.in/Ado.Entity</projectUrl>
+    <iconUrl>https://i.postimg.cc/nchpYRPr/logo.png</iconUrl>
+    <description>$description$</description>
+	<summary>$description$</summary>
+    <releaseNotes>
+	1. Initial stable version.
+	</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>Data,Entity,Ado,Database,Sql,ORM,micro-orm</tags>
+  </metadata>
+</package>
