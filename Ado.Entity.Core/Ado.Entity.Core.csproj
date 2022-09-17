@@ -9,13 +9,13 @@
     <PackageLicenseUrl>https://github.com/Open-range-org/.github/blob/main/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://sarkarnihar.in/Ado.Entity</PackageProjectUrl>
     <PackageIconUrl>https://i.postimg.cc/nchpYRPr/logo.png</PackageIconUrl>
-    <PackageReleaseNotes>Added Method matadata</PackageReleaseNotes>
+    <PackageReleaseNotes>adding base class support</PackageReleaseNotes>
     <PackageTags>Data,Entity,Ado,Database,Sql,ORM,micro-orm</PackageTags>
     <RepositoryUrl>https://github.com/Open-range-org/Ado.Entity</RepositoryUrl>
     <NeutralLanguage>en</NeutralLanguage>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <Version>1.0.1</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

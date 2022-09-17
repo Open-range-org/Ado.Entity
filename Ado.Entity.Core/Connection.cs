@@ -286,6 +286,22 @@ namespace Ado.Entity.Core
                         var val = ConvertObject(property, row[index]);
                         property.SetValue(_object, val, null);
                     }
+                    else if (property.PropertyType.IsEnum)
+                    {
+                        var val = Enum.Parse(property.PropertyType, row[index].ToString(), true);
+                        property.SetValue(_object, val, null);
+                    }
+                    else if (property.PropertyType.Name == "Guid")
+                    {
+                        Guid guid = Guid.Empty;
+                        try
+                        {
+                            guid = new Guid(row[index].ToString());
+                        }
+                        catch
+                        { }
+                        property.SetValue(_object, guid, null);
+                    }
                     else
                     {
                         try

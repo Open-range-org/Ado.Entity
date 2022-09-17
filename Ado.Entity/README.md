@@ -1,6 +1,6 @@
 # Ado.Entity
 
-[![Ado.Entity Nuget](https://img.shields.io/nuget/v/Ado.Entity.Core.svg?style=plastic&logo=nuget)](https://www.nuget.org/packages/Ado.Entity.Core)
+[![Ado.Entity Nuget](https://img.shields.io/nuget/v/Ado.Entity.svg?style=plastic&logo=nuget)](https://www.nuget.org/packages/Ado.Entity)
 [![Github](https://img.shields.io/badge/Github-Ado.Entity-green?logo=github)](https://github.com/Open-range-org/Ado.Entity)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Open-range-org/Ado.Entity/blob/main/LICENSE)
 [![Build Pass](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Open-range-org/Ado.Entity/)
@@ -10,7 +10,7 @@
 
 You need to import Ado.Entity Namespace'
 ```cs
-  using Ado.Entity.Core;
+  using Ado.Entity;
 ```
 After Improting the namespace we need to create one POCO class which will hve same name as a table . That POCO need to inharite the class **`AdoBase`** . That class should contain properties Where Property names and Column names of the Table should be same . For Example, if we have a table called **Users** and it's having 5 columns `"Id(int)","Name(varchar(20))","Age(int)","IsAdmin(bit)","DOB(datetime)"` then the mapping poco class is  
 
