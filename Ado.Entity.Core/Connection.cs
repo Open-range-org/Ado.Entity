@@ -101,6 +101,7 @@ namespace Ado.Entity.Core
         {
             Validation<T>();
             string queryString = BuildInsertQueryString<T>(obj);
+            SqlTransaction objTrans = null;
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
                 if (con.State != ConnectionState.Open)
@@ -108,11 +109,14 @@ namespace Ado.Entity.Core
 
                 try
                 {
-                    SqlCommand objSqlCommand = new SqlCommand(queryString, con);
+                    objTrans = con.BeginTransaction();
+                    SqlCommand objSqlCommand = new SqlCommand(queryString, con, objTrans);
                     objSqlCommand.ExecuteNonQuery();
+                    objTrans.Commit();
                 }
                 catch (Exception ex)
                 {
+                    objTrans.Rollback();
                     throw new Exception(ex.Message);
                 }
                 finally
@@ -153,6 +157,7 @@ namespace Ado.Entity.Core
         {
             Validation<T>();
             string queryString = BuildUpdateQueryString<T>(obj);
+            SqlTransaction objTrans = null;
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
                 if (con.State != ConnectionState.Open)
@@ -160,11 +165,14 @@ namespace Ado.Entity.Core
 
                 try
                 {
-                    SqlCommand objSqlCommand = new SqlCommand(queryString, con);
+                    objTrans = con.BeginTransaction();
+                    SqlCommand objSqlCommand = new SqlCommand(queryString, con, objTrans);
                     objSqlCommand.ExecuteNonQuery();
+                    objTrans.Commit();
                 }
                 catch (Exception ex)
                 {
+                    objTrans.Rollback();
                     throw new Exception(ex.Message);
                 }
                 finally
@@ -178,37 +186,48 @@ namespace Ado.Entity.Core
         {
 
             var primaryKey = typeof(T).GetProperties().Where(a => a.GetCustomAttributes(true).Where(s => s.GetType() == typeof(Primary)).Count() == 1).FirstOrDefault();
-            var queryString = $"UPDATE {obj.GetType().Name} SET ";
+            var attribute = typeof(T).GetCustomAttributes(true).Where(s => s.GetType() == typeof(Table)).FirstOrDefault() as Table;
+            string tableName = attribute != null ? attribute.TableName : obj.GetType().Name;
+            var queryString = $"UPDATE {tableName} SET ";
             var properties = obj.GetType().GetProperties();
 
             string filterQuery = string.Empty;
             foreach (var property in properties)
             {
-                if (property.Name == primaryKey.Name)
+                var propAttribute = property.GetCustomAttributes(typeof(Column)).FirstOrDefault() as Column;
+                string columnName = propAttribute != null ? propAttribute.Name : property.Name;
+                if (columnName == primaryKey.Name)
                 {
-                    filterQuery += $"Where {property.Name}={property.GetValue(obj, null)}";
-                }
-                else
-                {
-                    var propertyTypeName = property.PropertyType.Name;
-                    if (propertyTypeName == "String" || propertyTypeName == "Type" ||
-                        propertyTypeName == "DateTime" || propertyTypeName == "Guid")
+                    if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Guid")
                     {
-                        queryString += $"[{property.Name}]='{property.GetValue(obj, null)}',";
-                    }
-                    else if (property.PropertyType.Name == "Boolean")
-                    {
-                        queryString += $"[{property.Name}]={Convert.ToByte(property.GetValue(obj, null))},";
-                    }
-                    else if (property.PropertyType.BaseType.Name == "Enum")
-                    {
-                        queryString += $"'{property.GetValue(obj, null)}',";
+                        filterQuery += $"Where {columnName}='{property.GetValue(obj)}'";
                     }
                     else
                     {
-                        queryString += $"[{property.Name}]={property.GetValue(obj, null)},";
+                        filterQuery += $"Where {columnName}={property.GetValue(obj)}";
                     }
                 }
+                else
+                {
+                    if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Type" || property.PropertyType.Name == "Guid" || property.PropertyType.Name == "DateTime")
+                    {
+                        queryString += $"[{columnName}]='{property.GetValue(obj)}',";
+                    }
+                    else if (property.PropertyType.Name == "Boolean")
+                    {
+                        queryString += $"[{columnName}]={Convert.ToByte(property.GetValue(obj))},";
+                    }
+                    else if (property.PropertyType.BaseType.Name == "Enum")
+                    {
+                        queryString += $"[{columnName}]='{property.GetValue(obj)}',";
+                    }
+                    else
+                    {
+                        queryString += $"[{columnName}]={property.GetValue(obj)},";
+                    }
+                }
+
+
             }
             queryString = queryString.Remove(queryString.Length - 1, 1) + $" {filterQuery}";
             return queryString;
@@ -216,38 +235,53 @@ namespace Ado.Entity.Core
         private string BuildInsertQueryString<T>(T obj)
         {
 
-            String identityStart = $"SET IDENTITY_INSERT {obj.GetType().Name} ON ;";
-            String identityEnd = $"SET IDENTITY_INSERT {obj.GetType().Name} OFF ;";
-            String queryString = $"insert into {obj.GetType().Name} (";
+            var attribute = typeof(T).GetCustomAttributes(true).Where(s => s.GetType() == typeof(Table)).FirstOrDefault() as Table;
+            string tableName = attribute != null ? attribute.TableName : obj.GetType().Name;
+            string identityStart = $"SET IDENTITY_INSERT {tableName} ON ;";
+            string identityEnd = $"SET IDENTITY_INSERT {tableName} OFF ;";
+
+
+            string queryString = $"insert into {tableName} (";
             var properties = obj.GetType().GetProperties();
             foreach (var property in properties)
             {
-                queryString += $"[{property.Name}],";
+
+                var propAttribute = property.GetCustomAttributes(typeof(Column)).FirstOrDefault() as Column;
+                string columnName = propAttribute != null ? propAttribute.Name : property.Name;
+                queryString += $"[{columnName}],";
             }
             queryString = queryString.Remove(queryString.Length - 1, 1) + ") VALUES (";
             foreach (var property in properties)
             {
-                var propertyTypeName = property.PropertyType.Name;
-                if (propertyTypeName == "String" || propertyTypeName == "Type" ||
-                    propertyTypeName == "DateTime" || propertyTypeName == "Guid")
+                if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Type" || property.PropertyType.Name == "Guid")
                 {
-                    queryString += $"'{property.GetValue(obj, null)}',";
+                    queryString += $"'{property.GetValue(obj)}',";
+                }
+                else if (property.PropertyType.Name == "DateTime")
+                {
+                    var date = Convert.ToDateTime(property.GetValue(obj));
+                    DateTime updatedDate = date;
+                    if (date.Year < 1753)
+                    {
+                        updatedDate = date.AddYears(1753 - date.Year);
+                    }
+                    queryString += $"'{updatedDate}',";
                 }
                 else if (property.PropertyType.Name == "Boolean")
                 {
-                    queryString += $"{Convert.ToByte(property.GetValue(obj, null))},";
+                    queryString += $"{Convert.ToByte(property.GetValue(obj))},";
                 }
                 else if (property.PropertyType.BaseType.Name == "Enum")
                 {
-                    queryString += $"'{property.GetValue(obj, null)}',";
+                    queryString += $"'{property.GetValue(obj)}',";
                 }
                 else
                 {
-                    queryString += $"{property.GetValue(obj, null)},";
+                    queryString += $"{property.GetValue(obj)},";
                 }
             }
             queryString = queryString.Remove(queryString.Length - 1, 1) + $");";
-            string query = $"  IF (OBJECTPROPERTY(OBJECT_ID('{obj.GetType().Name}'), 'TableHasIdentity') > 0) {Environment.NewLine} BEGIN {Environment.NewLine}";
+            string query = $"  IF (OBJECTPROPERTY(OBJECT_ID('{tableName}'), 'TableHasIdentity') > 0) {Environment.NewLine} BEGIN {Environment.NewLine}";
             query += $" {identityStart} {Environment.NewLine} {queryString} {Environment.NewLine} {identityEnd} {Environment.NewLine} END {Environment.NewLine}";
             query += $" ELSE {Environment.NewLine} BEGIN {Environment.NewLine} {queryString}{Environment.NewLine} END";
             return query;
@@ -277,8 +311,9 @@ namespace Ado.Entity.Core
             var properties = _object.GetType().GetProperties();
             foreach (var property in properties)
             {
-                var x = property.GetCustomAttributes(true).Count() > 0 ? property.GetCustomAttributes(true)[0].GetType().Name : null;
-                var index = column.IndexOf(property.Name);
+                var propAttribute = property.GetCustomAttributes(typeof(Column)).FirstOrDefault() as Column;
+                string columnName = propAttribute != null ? propAttribute.Name : property.Name;
+                var index = column.IndexOf(columnName);
                 if (index != -1)
                 {
                     if (property.PropertyType.IsClass || property.PropertyType.IsPrimitive)
@@ -320,10 +355,6 @@ namespace Ado.Entity.Core
         private object ConvertObject(PropertyInfo prop, object val)
         {
             object convertedValue = null;
-            //if (prop.PropertyType.IsClass)
-            //{
-            //    convertedValue = Convert.ChangeType(val, Type.GetType(prop.PropertyType.Name));
-            //}
             var propType = prop.PropertyType.Name;
             switch (propType)
             {
