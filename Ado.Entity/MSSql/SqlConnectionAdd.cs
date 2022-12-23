@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
 using System.Data;
@@ -10,8 +11,8 @@ namespace Ado.Entity
 {
     public partial class Connection:IConnection
     {
-
-
+        Dictionary<string, SqlSchema> _dataList = new Dictionary<string, SqlSchema>();
+        private string _addType= string.Empty;
        
         /// <summary>
         /// Adds list of object in table
@@ -41,8 +42,16 @@ namespace Ado.Entity
         /// <returns>Boolean value if transaction is successful</returns>
         public bool AddEntry<T>(T obj)
         {
+            var attribute = typeof(T).GetCustomAttributes(true).Where(s => s.GetType() == typeof(Table)).FirstOrDefault() as Table;
+            string tableName = attribute != null ? attribute.TableName : obj.GetType().Name;
+            if(tableName != _addType)
+            {
+                _addType = tableName;
+                var sqlSchema = GetDataByQuery<SqlSchema>($"select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = '{tableName}'").OrderBy(s => s.Ordinal).ToList();
+                LoadMetaData(sqlSchema);
+            }
             Validation<T>();
-            string queryString = BuildInsertQueryString<T>(obj);
+            string queryString = BuildInsertQueryString<T>(obj, tableName);
             SqlTransaction objTrans = null;
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
@@ -68,13 +77,17 @@ namespace Ado.Entity
             }
             return true;
         }
-
+        private void LoadMetaData(List<SqlSchema> schemaList)
+        {
+            schemaList.ForEach(s =>{
+                _dataList.Add(s.ColumnName, s);
+            });
+        }
        
-        private string BuildInsertQueryString<T>(T obj)
+        private string BuildInsertQueryString<T>(T obj,string tableName)
         {
 
-            var attribute = typeof(T).GetCustomAttributes(true).Where(s => s.GetType() == typeof(Table)).FirstOrDefault() as Table;
-            string tableName = attribute != null ? attribute.TableName : obj.GetType().Name;
+            
             string identityStart = $"SET IDENTITY_INSERT {tableName} ON ;";
             string identityEnd = $"SET IDENTITY_INSERT {tableName} OFF ;";
             string queryString = $"insert into {tableName} (";

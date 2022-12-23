@@ -85,7 +85,10 @@ namespace Ado.Entity
             foreach (var property in properties)
             {
                 var x = property.GetCustomAttributes(true).Count() > 0 ? property.GetCustomAttributes(true)[0].GetType().Name : null;
-                var index = column.IndexOf(property.Name);
+                var propAttribute = property.GetCustomAttributes(typeof(Column), false).FirstOrDefault() as Column;
+                string columnName = propAttribute != null ? propAttribute.Name : property.Name;
+                var index = column.IndexOf(columnName);
+
                 if (index != -1)
                 {
                     if (property.PropertyType.IsClass || property.PropertyType.IsPrimitive)
