@@ -11,6 +11,8 @@ namespace Ado.Entity
     public partial class Connection:IConnection
     {
         private string ConnectionString;
+        Dictionary<string, SqlSchema> _schimaDictionary = new Dictionary<string, SqlSchema>();
+        private string _type = string.Empty;
         public Connection(string connectionString)
         {
             ConnectionString = connectionString;
@@ -21,6 +23,13 @@ namespace Ado.Entity
             {
                 throw new NotImplementedException("AdoBase class is not inharited in Entity");
             }
+        }
+
+        private void LoadMetaData(List<SqlSchema> schemaList)
+        {
+            schemaList.ForEach(s => {
+                _schimaDictionary.Add(s.ColumnName, s);
+            });
         }
 
     }

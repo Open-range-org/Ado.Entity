@@ -11,8 +11,7 @@ namespace Ado.Entity
 {
     public partial class Connection:IConnection
     {
-        Dictionary<string, SqlSchema> _dataList = new Dictionary<string, SqlSchema>();
-        private string _addType= string.Empty;
+
        
         /// <summary>
         /// Adds list of object in table
@@ -44,9 +43,9 @@ namespace Ado.Entity
         {
             var attribute = typeof(T).GetCustomAttributes(true).Where(s => s.GetType() == typeof(Table)).FirstOrDefault() as Table;
             string tableName = attribute != null ? attribute.TableName : obj.GetType().Name;
-            if(tableName != _addType)
+            if(tableName != _type)
             {
-                _addType = tableName;
+                _type = tableName;
                 var sqlSchema = GetDataByQuery<SqlSchema>($"select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = '{tableName}'").OrderBy(s => s.Ordinal).ToList();
                 LoadMetaData(sqlSchema);
             }
@@ -77,12 +76,6 @@ namespace Ado.Entity
             }
             return true;
         }
-        private void LoadMetaData(List<SqlSchema> schemaList)
-        {
-            schemaList.ForEach(s =>{
-                _dataList.Add(s.ColumnName, s);
-            });
-        }
        
         private string BuildInsertQueryString<T>(T obj,string tableName)
         {
@@ -103,8 +96,8 @@ namespace Ado.Entity
             {
                 var propAttribute = property.GetCustomAttributes(typeof(Column), false).FirstOrDefault() as Column;
                 string columnName = propAttribute != null ? propAttribute.Name : property.Name;
-                string columnType = _dataList[columnName] != null ? _dataList[columnName].DataType : "varchar";
-                if (columnType == "varchar" || columnType == "char" || columnType == "Guid")
+                string columnType = _schimaDictionary[columnName] != null ? _schimaDictionary[columnName].DataType : "varchar";
+                if (columnType == "varchar" || columnType == "char" || columnType == "nchar" || columnType == "nvarchar")
                 {
                     queryString += $"'{property.GetValue(obj, null)}',";
                 }
