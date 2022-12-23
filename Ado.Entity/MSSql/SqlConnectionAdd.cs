@@ -101,11 +101,14 @@ namespace Ado.Entity
             queryString = queryString.Remove(queryString.Length - 1, 1) + ") VALUES (";
             foreach (var property in properties)
             {
-                if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Type" || property.PropertyType.Name == "Guid")
+                var propAttribute = property.GetCustomAttributes(typeof(Column), false).FirstOrDefault() as Column;
+                string columnName = propAttribute != null ? propAttribute.Name : property.Name;
+                string columnType = _dataList[columnName] != null ? _dataList[columnName].DataType : "varchar";
+                if (columnType == "varchar" || columnType == "char" || columnType == "Guid")
                 {
                     queryString += $"'{property.GetValue(obj, null)}',";
                 }
-                else if (property.PropertyType.Name == "DateTime")
+                else if (columnType.Contains("date"))
                 {
                     var date = Convert.ToDateTime(property.GetValue(obj, null));
                     DateTime updatedDate = date;
@@ -113,15 +116,26 @@ namespace Ado.Entity
                     {
                         updatedDate = date.AddYears(1753 - date.Year);
                     }
-                    queryString += $"'{updatedDate.ToString("YYYY-MM-DD hh:mm:ss")}',";
+                    if (columnType == "date")
+                    {
+                        queryString += $"'{updatedDate.ToString("YYYY-MM-DD")}',";
+                    }
+                    else if (columnType == "datetime")
+                    {
+                        queryString += $"'{updatedDate.ToString("yyyy-MM-dd HH:mm:ss.fff")}',";
+                    }
+                    else if (columnType == "datetime2")
+                    {
+                        queryString += $"'{updatedDate.ToString("YYYY-MM-DD hh:mm:ss.ffffff")}',";
+                    }
+                    else
+                    {
+                        queryString += $"'{updatedDate.ToString("YYYY-MM-DD hh:mm:ss")}',";
+                    }
                 }
-                else if (property.PropertyType.Name == "Boolean")
+                else if (columnType == "bit")
                 {
                     queryString += $"{Convert.ToByte(property.GetValue(obj, null))},";
-                }
-                else if (property.PropertyType.BaseType.Name == "Enum")
-                {
-                    queryString += $"'{property.GetValue(obj, null)}',";
                 }
                 else
                 {
