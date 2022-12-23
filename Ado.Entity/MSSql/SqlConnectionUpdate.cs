@@ -38,8 +38,16 @@ namespace Ado.Entity
         /// <returns>Boolean value if transaction is successful</returns>
         public bool UpdateEntry<T>(T obj)
         {
+            var attribute = typeof(T).GetCustomAttributes(true).Where(s => s.GetType() == typeof(Table)).FirstOrDefault() as Table;
+            string tableName = attribute != null ? attribute.TableName : obj.GetType().Name;
+            if (tableName != _type)
+            {
+                _type = tableName;
+                var sqlSchema = GetDataByQuery<SqlSchema>($"select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = '{tableName}'").OrderBy(s => s.Ordinal).ToList();
+                LoadMetaData(sqlSchema);
+            }
             Validation<T>();
-            string queryString = BuildUpdateQueryString<T>(obj);
+            string queryString = BuildUpdateQueryString<T>(obj, tableName);
             SqlTransaction objTrans = null;
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
@@ -65,12 +73,10 @@ namespace Ado.Entity
             }
             return true;
         }
-        private string BuildUpdateQueryString<T>(T obj)
+        private string BuildUpdateQueryString<T>(T obj, string tableName)
         {
 
             var primaryKey = typeof(T).GetProperties().Where(a => a.GetCustomAttributes(true).Where(s => s.GetType() == typeof(Primary)).Count() == 1).FirstOrDefault();
-            var attribute = typeof(T).GetCustomAttributes(true).Where(s => s.GetType() == typeof(Table)).FirstOrDefault() as Table;
-            string tableName = attribute != null ? attribute.TableName : obj.GetType().Name;
             var queryString = $"UPDATE {tableName} SET ";
             var properties = obj.GetType().GetProperties();
 
@@ -79,9 +85,10 @@ namespace Ado.Entity
             {
                 var propAttribute = property.GetCustomAttributes(typeof(Column), false).FirstOrDefault() as Column;
                 string columnName = propAttribute != null ? propAttribute.Name : property.Name;
+                string columnType = _schimaDictionary[columnName] != null ? _schimaDictionary[columnName].DataType : "varchar";
                 if (columnName == primaryKey.Name)
                 {
-                    if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Guid")
+                    if (columnType == "varchar" || columnType == "char" || columnType == "nchar" || columnType == "nvarchar")
                     {
                         filterQuery += $"Where {columnName}='{property.GetValue(obj, null)}'";
                     }
@@ -92,17 +99,40 @@ namespace Ado.Entity
                 }
                 else
                 {
-                    if (property.PropertyType.Name == "String" || property.PropertyType.Name == "Type" || property.PropertyType.Name == "Guid" || property.PropertyType.Name == "DateTime")
+                    if (columnType == "varchar" || columnType == "char" || columnType == "nchar" || columnType == "nvarchar")
                     {
                         queryString += $"[{columnName}]='{property.GetValue(obj, null)}',";
                     }
-                    else if (property.PropertyType.Name == "Boolean")
+                    else if (columnType.Contains("date"))
+                    {
+                        var date = Convert.ToDateTime(property.GetValue(obj, null));
+                        string dateString = string.Empty;
+                        DateTime updatedDate = date;
+                        if (date.Year < 1753)
+                        {
+                            updatedDate = date.AddYears(1753 - date.Year);
+                        }
+                        if (columnType == "date")
+                        {
+                            dateString = $"'{updatedDate.ToString("YYYY-MM-DD")}',";
+                        }
+                        else if (columnType == "datetime")
+                        {
+                            dateString = $"'{updatedDate.ToString("yyyy-MM-dd HH:mm:ss.fff")}',";
+                        }
+                        else if (columnType == "datetime2")
+                        {
+                            dateString = $"'{updatedDate.ToString("YYYY-MM-DD hh:mm:ss.ffffff")}',";
+                        }
+                        else
+                        {
+                            dateString= $"'{updatedDate.ToString("YYYY-MM-DD hh:mm:ss")}',";
+                        }
+                        queryString += $"[{columnName}]={dateString}";
+                    }
+                    else if (columnType == "bit")
                     {
                         queryString += $"[{columnName}]={Convert.ToByte(property.GetValue(obj, null))},";
-                    }
-                    else if (property.PropertyType.BaseType.Name == "Enum")
-                    {
-                        queryString += $"[{columnName}]='{property.GetValue(obj, null)}',";
                     }
                     else
                     {
