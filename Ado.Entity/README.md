@@ -15,14 +15,18 @@ You need to import Ado.Entity Namespace'
 After Improting the namespace we need to create one POCO class which will hve same name as a table . That POCO need to inharite the class **`AdoBase`** . That class should contain properties Where Property names and Column names of the Table should be same . For Example, if we have a table called **Users** and it's having 5 columns `"Id(int)","Name(varchar(20))","Age(int)","IsAdmin(bit)","DOB(datetime)"` then the mapping poco class is  
 
 ```cs
+
+    [Table("Users")]
     class Users:AdoBase
     {
         [Primary]
         public int Id { get; set; }
         public string Name { get; set; }
-        public bool IsAdmin { get; set; }
+        public bool IsActive { get; set; }
+        public double Salary { get; set; }
         public int Age { get; set; }
-        public DateTime DOB { get; set; }
+        [Column("DOB")]
+        public DateTime DateOfBirth { get; set; }
     }
 ```
 Note : We can use attribute like , Primary , Unique  for a property . One class can have only one property tith attribute primary . More then one primary attribute will throw error(runtime).
@@ -78,6 +82,26 @@ To Insert a row of the table Users first we need to create a instance of `Connec
             IConnection connection = new Connection(connectionString);
             //dataList is List<Users>  .
             connection.AddEntry<Users>(dataList);
+        }
+```
+## Delete row(s) from a table
+To Delete a row of the table Users first we need to create a instance of `Connection` class where we need to pass connection string .  `DeleteEntry` helps to delete a row . we need to pass an object of class "Users" in `DeleteEntry` . 
+ Deleting multiple rows also possible here . 
+
+```cs
+//single row Delete 
+        public DbConnection()
+        {
+            IConnection connection = new Connection(connectionString);
+            //data is a object of class Users .
+            connection.DeleteEntry<Users>(data);
+        }
+//multiple row Delete
+        public DbConnection()
+        {
+            IConnection connection = new Connection(connectionString);
+            //dataList is List<Users>  .
+            connection.DeleteEntry<Users>(dataList);
         }
 ```
 
