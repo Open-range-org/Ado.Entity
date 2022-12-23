@@ -8,10 +8,10 @@
     <OutputType>Library</OutputType>
     <PackageId>Ado.Entity</PackageId>
     <Id>Ado.Entity</Id>
-	<Title>$title$</Title>
-	<Version>$version$</Version>
-	<Copyright>$copyright$</Copyright>
-	<Description>$description$</Description>
+    <Title>$title$</Title>
+    <Version>$version$</Version>
+    <Copyright>$copyright$</Copyright>
+    <Description>$description$</Description>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <Language>English</Language>
     <RootNamespace>Ado.Entity</RootNamespace>
@@ -48,7 +48,11 @@
   <ItemGroup>
     <Compile Include="AdoBase.cs" />
     <Compile Include="Common.cs" />
-    <Compile Include="Connection.cs" />
+    <Compile Include="MSSql\SqlConnectionDelete.cs" />
+    <Compile Include="MSSql\SqlConnection.cs" />
+    <Compile Include="MSSql\SqlConnectionGet.cs" />
+    <Compile Include="MSSql\SqlConnectionUpdate.cs" />
+    <Compile Include="MSSql\SqlConnectionAdd.cs" />
     <Compile Include="Conversion.cs" />
     <Compile Include="CustomAttributes.cs" />
     <Compile Include="IConnection.cs" />
