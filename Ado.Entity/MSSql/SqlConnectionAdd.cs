@@ -97,7 +97,7 @@ namespace Ado.Entity
                 var propAttribute = property.GetCustomAttributes(typeof(Column), false).FirstOrDefault() as Column;
                 string columnName = propAttribute != null ? propAttribute.Name : property.Name;
                 string columnType = _schimaDictionary[columnName] != null ? _schimaDictionary[columnName].DataType : "varchar";
-                if (columnType == "varchar" || columnType == "char" || columnType == "nchar" || columnType == "nvarchar")
+                if (columnType == "varchar" || columnType == "char" || columnType == "nchar" || columnType == "nvarchar"||columnType == "uniqueidentifier")
                 {
                     queryString += $"'{property.GetValue(obj, null)}',";
                 }

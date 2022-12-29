@@ -88,7 +88,7 @@ namespace Ado.Entity
                 string columnType = _schimaDictionary[columnName] != null ? _schimaDictionary[columnName].DataType : "varchar";
                 if (columnName == primaryKey.Name)
                 {
-                    if (columnType == "varchar" || columnType == "char" || columnType == "nchar" || columnType == "nvarchar")
+                    if (columnType == "varchar" || columnType == "char" || columnType == "nchar" || columnType == "nvarchar" || columnType == "uniqueidentifier")
                     {
                         filterQuery += $"Where {columnName}='{property.GetValue(obj, null)}'";
                     }
