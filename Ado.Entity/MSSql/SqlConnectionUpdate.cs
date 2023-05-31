@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Ado.Entity
+namespace Ado.Entity.MSSql
 {
     public partial class Connection : IConnection
     {

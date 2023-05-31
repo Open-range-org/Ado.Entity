@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace Ado.Entity
+namespace Ado.Entity.MSSql
 {
     [Table("COLUMNS")]
     internal class SqlSchema: AdoBase
