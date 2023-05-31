@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>Ado.Entity</id>
+    <version>2.3.0.0</version>
+    <title>Ado.Entity 2.3.0.0</title>
+    <authors>Nihar Sarkar</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- <icon>icon.png</icon> -->
+    <projectUrl>https://sarkarnihar.in/Ado.Entity</projectUrl>
+    <iconUrl>https://i.postimg.cc/nchpYRPr/logo.png</iconUrl>
+    <description>Ado.Entity is an object-relational mapping framework for .NET applications. Object-relational mapping allows the use of database queries and operations with object-oriented programming languages.
+  It has similarty with Entity framework But you must agree that , it is a lot simpler than Entity framework .</description>
+	<summary>Ado.Entity is an object-relational mapping framework for .NET applications.</summary>
+    <releaseNotes>
+	1. Adding PGSql Support
+	</releaseNotes>
+    <copyright></copyright>
+    <tags>Data,Entity,Ado,Database,Sql,ORM,micro-orm</tags>
+  </metadata>
+</package>
