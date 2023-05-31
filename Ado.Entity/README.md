@@ -10,7 +10,7 @@
 
 You need to import Ado.Entity Namespace'
 ```cs
-  using Ado.Entity;
+  using Ado.Entity.MSSql;
 ```
 After Improting the namespace we need to create one POCO class which will hve same name as a table . That POCO need to inharite the class **`AdoBase`** . That class should contain properties Where Property names and Column names of the Table should be same . For Example, if we have a table called **Users** and it's having 5 columns `"Id(int)","Name(varchar(20))","Age(int)","IsAdmin(bit)","DOB(datetime)"` then the mapping poco class is  
 

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>Nihar Sarkar</Authors>
-    <Company>Nihar SarkarNihar Sarkar</Company>
+    <Company>Nihar Sarkar</Company>
     <Description>Light version of Orm for .net framework and sql, Easy to use.</Description>
     <Copyright>Copyright ©  2022</Copyright>
     <PackageLicenseUrl>https://github.com/Open-range-org/.github/blob/main/LICENSE</PackageLicenseUrl>
@@ -13,9 +13,9 @@
     <PackageTags>Data,Entity,Ado,Database,Sql,ORM,micro-orm</PackageTags>
     <RepositoryUrl>https://github.com/Open-range-org/Ado.Entity</RepositoryUrl>
     <NeutralLanguage>en</NeutralLanguage>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
-    <Version>1.2.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

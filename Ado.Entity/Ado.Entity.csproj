@@ -38,6 +38,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.2.2.7\lib\net35\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql, Version=2.2.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.2.2.7\lib\net35\Npgsql.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,15 +55,24 @@
     <Compile Include="AdoBase.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="MSSql\SqlConnectionDelete.cs" />
-    <Compile Include="MSSql\SqlConnection.cs" />
+    <Compile Include="MSSql\Connection.cs" />
     <Compile Include="MSSql\SqlConnectionGet.cs" />
     <Compile Include="MSSql\SqlConnectionUpdate.cs" />
     <Compile Include="MSSql\SqlConnectionAdd.cs" />
     <Compile Include="Conversion.cs" />
     <Compile Include="CustomAttributes.cs" />
-    <Compile Include="IConnection.cs" />
+    <Compile Include="MSSql\IConnection.cs" />
     <Compile Include="MSSql\SqlSchema.cs" />
+    <Compile Include="PGSql\Connection.cs" />
+    <Compile Include="PGSql\IConnection.cs" />
+    <Compile Include="PGSql\SqlConnectionAdd.cs" />
+    <Compile Include="PGSql\SqlConnectionGet.cs" />
+    <Compile Include="PGSql\SqlConnectionUpdate.cs" />
+    <Compile Include="PGSql\SqlCustomAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

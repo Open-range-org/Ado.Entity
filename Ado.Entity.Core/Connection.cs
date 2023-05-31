@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Data;
 using System.Data.SqlClient;
+using Ado.Entity.Core.MSSql;
 
 namespace Ado.Entity.Core
 {
