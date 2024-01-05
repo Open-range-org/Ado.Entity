@@ -2,8 +2,8 @@
 <package >
   <metadata>
     <id>Ado.Entity.Core</id>
-    <version>2.3.0.0</version>
-    <title>Ado.Entity.Core 2.3.0.0</title>
+    <version>2.5.0.0</version>
+    <title>Ado.Entity.Core</title>
     <authors>Nihar Sarkar</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
