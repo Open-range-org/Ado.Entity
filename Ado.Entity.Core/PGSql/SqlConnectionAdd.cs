@@ -40,6 +40,7 @@ namespace Ado.Entity.Core.PGSql
         }
         public bool AddEntryByModel<T>(List<T> models)
         {
+            Validation<T>();
             using (NpgsqlConnection con = new NpgsqlConnection(_connectionString))
             {
                 try
@@ -71,6 +72,7 @@ namespace Ado.Entity.Core.PGSql
         }
         public bool AddEntryByModel<T>(T model)
         {
+            Validation<T>();
             using (NpgsqlConnection con = new NpgsqlConnection(_connectionString))
             {
                 try

@@ -5,7 +5,7 @@
     <Authors>Nihar Sarkar</Authors>
     <Company>Nihar Sarkar</Company>
     <Description>Light version of Orm for .net framework and sql, Easy to use.</Description>
-    <Copyright>Copyright © 2023</Copyright>
+    <Copyright>Copyright © 2024</Copyright>
     <PackageLicenseUrl>https://github.com/Open-range-org/.github/blob/main/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://sarkarnihar.in/Ado.Entity</PackageProjectUrl>
     <PackageIconUrl>https://i.postimg.cc/nchpYRPr/logo.png</PackageIconUrl>
@@ -13,9 +13,9 @@
     <PackageTags>Data,Entity,Ado,Database,Sql,ORM,micro-orm</PackageTags>
     <RepositoryUrl>https://github.com/Open-range-org/Ado.Entity</RepositoryUrl>
     <NeutralLanguage>en</NeutralLanguage>
-    <AssemblyVersion>2.5.0.0</AssemblyVersion>
-    <FileVersion>2.5.0.0</FileVersion>
-    <Version>2.5.0</Version>
+    <AssemblyVersion>2.6.0.0</AssemblyVersion>
+    <FileVersion>2.6.0.0</FileVersion>
+    <Version>2.6.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
